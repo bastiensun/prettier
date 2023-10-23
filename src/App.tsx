@@ -1,38 +1,67 @@
-import "./App.css";
-import viteLogo from "../../../../../../vite.svg";
-import reactLogo from "./assets/react.svg";
-import { type JSX, useState } from "react";
+import { format } from "prettier";
+// @ts-expect-error Could not find a declaration file for module `prettier-plugin-java`.
+import parserJava from "prettier-plugin-java";
+import { type ChangeEvent, type JSX, useState } from "react";
 
-const App = (): JSX.Element => {
-  const [count, setCount] = useState(0);
+const placeholder = `class  HelloWorld
+{
+  public  static  void  main( String[ ]  args ) 
+  {
+        System.out.println( "Hello, World!" ) ; 
+    }
+}`;
+
+const formattedPlaceholder = `class HelloWorld {
+
+    public static void main(String[] args) {
+        System.out.println("Hello, World!");
+    }
+}`;
+
+export const App = (): JSX.Element => {
+  const [source, setSource] = useState(placeholder);
+  const [result, setResult] = useState(formattedPlaceholder);
+
+  const handleChange = async (
+    event: ChangeEvent<HTMLTextAreaElement>,
+  ): Promise<void> => {
+    setSource(event.target.value);
+
+    let formatted = "";
+
+    try {
+      formatted = await format(event.target.value, {
+        parser: "java",
+        plugins: [parserJava],
+        printWidth: 120,
+        tabWidth: 4,
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        setResult(error.message);
+        return;
+      }
+    }
+
+    setResult(formatted);
+  };
 
   return (
-    <>
+    <div style={{ display: "flex", flexWrap: "wrap" }}>
       <div>
-        <a href="https://vitejs.dev" rel="noreferrer" target="_blank">
-          <img alt="Vite logo" className="logo" src={viteLogo} />
-        </a>
-        <a href="https://react.dev" rel="noreferrer" target="_blank">
-          <img alt="React logo" className="logo react" src={reactLogo} />
-        </a>
+        <textarea
+          cols={120}
+          onChange={handleChange}
+          rows={(source.match(/\n/gu)?.length ?? 0) + 10}
+          spellCheck={false}
+          value={source}
+        />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button
-          onClick={(): void => setCount((previousCount) => previousCount + 1)}
-          type="button"
-        >
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
+      <div>
+        <pre>
+          <code>{result}</code>
+        </pre>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    </div>
   );
 };
-
-export default App;
