@@ -35,4 +35,12 @@ test("happy path", async () => {
 
   // Assert
   expect(textarea).toHaveDisplayValue("class HelloWorld {}");
+
+  // Act
+  await user.click(
+    screen.getByRole("button", { name: "class HelloWorld { }" }),
+  );
+
+  // Assert
+  expect(screen.getByText(/copied to clipboard/iu));
 });
