@@ -90,7 +90,13 @@ export const App = (): JSX.Element => {
   return (
     <>
       <div className="m-10">
-        <div className="grid grid-cols-1 gap-10 xl:grid-cols-2">
+        <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
+          ☕ Prettier Java{" "}
+          <span className="ml-1 font-semibold text-muted-foreground">
+            Playground
+          </span>
+        </h1>
+        <div className="mt-6 grid grid-cols-1 gap-10 xl:grid-cols-2">
           <div>
             <Textarea
               onChange={handleChange}

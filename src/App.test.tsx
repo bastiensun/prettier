@@ -21,6 +21,10 @@ test("happy path", async () => {
   render(<App />);
 
   // Assert
+  expect(
+    screen.getByRole("heading", { name: /prettier java playground/iu }),
+  ).toBeVisible();
+
   const textarea = screen.getByRole("textbox");
   expect(textarea).toHaveDisplayValue(placeholder);
 
