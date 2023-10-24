@@ -1,6 +1,7 @@
 import { format } from "prettier";
 // @ts-expect-error Could not find a declaration file for module `prettier-plugin-java`.
 import parserJava from "prettier-plugin-java";
+import { Highlight, themes } from "prism-react-renderer";
 import { type ChangeEvent, type JSX, useState } from "react";
 
 const placeholder = `class  HelloWorld
@@ -58,9 +59,21 @@ export const App = (): JSX.Element => {
         />
       </div>
       <div>
-        <pre>
-          <code>{result}</code>
-        </pre>
+        <Highlight code={result} language="kotlin" theme={themes.oneLight}>
+          {({ getLineProps, getTokenProps, style, tokens }): JSX.Element => (
+            <pre style={style}>
+              {/* eslint-disable react/no-array-index-key*/}
+              {tokens.map((line, lineIndex) => (
+                <div key={lineIndex} {...getLineProps({ line })}>
+                  {line.map((token, tokenIndex) => (
+                    <span key={tokenIndex} {...getTokenProps({ token })} />
+                  ))}
+                </div>
+              ))}
+              {/* eslint-enable react/no-array-index-key */}
+            </pre>
+          )}
+        </Highlight>
       </div>
     </div>
   );

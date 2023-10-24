@@ -12,6 +12,7 @@
   "dependencies": {
     "prettier": "^3.0.3",
     "prettier-plugin-java": "^2.3.1",
+    "prism-react-renderer": "^2.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
