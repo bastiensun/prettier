@@ -44,3 +44,24 @@ test("happy path", async () => {
   // Assert
   expect(screen.getByText(/copied to clipboard/iu));
 });
+
+test("on paste", async () => {
+  // Arrange
+  const user = userEvent.setup();
+
+  const unformattedCode = "  class  HelloWorld{     }  ";
+  const formattedCode = "class HelloWorld { }";
+
+  // Act
+  render(<App />);
+
+  const textarea = screen.getByRole("textbox");
+  await user.click(textarea);
+  await user.clear(textarea);
+  await user.paste(unformattedCode);
+
+  // Assert
+  expect(textarea).toHaveDisplayValue(unformattedCode);
+  expect(screen.getByRole("button", { name: formattedCode }));
+  expect(screen.getByText(/copied to clipboard/iu));
+});

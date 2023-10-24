@@ -5,7 +5,12 @@ import { format } from "prettier";
 // @ts-expect-error Could not find a declaration file for module `prettier-plugin-java`.
 import parserJava from "prettier-plugin-java";
 import { Highlight, themes } from "prism-react-renderer";
-import { type ChangeEvent, type JSX, useState } from "react";
+import {
+  type ChangeEvent,
+  type ClipboardEvent,
+  type JSX,
+  useState,
+} from "react";
 
 const placeholder = `class  HelloWorld
 {
@@ -51,6 +56,29 @@ export const App = (): JSX.Element => {
     setResult(formatted);
   };
 
+  const handlePaste = async (
+    event: ClipboardEvent<HTMLTextAreaElement>,
+  ): Promise<void> => {
+    let formatted = "";
+
+    try {
+      formatted = await format(event.clipboardData.getData("text/plain"), {
+        parser: "java",
+        plugins: [parserJava],
+        printWidth: 120,
+        tabWidth: 4,
+      });
+    } catch {
+      return;
+    }
+
+    await navigator.clipboard.writeText(formatted);
+
+    toast({
+      description: "📋 Copied to clipboard!",
+    });
+  };
+
   const handleClick = async (): Promise<void> => {
     await navigator.clipboard.writeText(result);
 
@@ -67,6 +95,7 @@ export const App = (): JSX.Element => {
             <Textarea
               cols={120}
               onChange={handleChange}
+              onPaste={handlePaste}
               rows={(source.match(/\n/gu)?.length ?? 0) + 1}
               spellCheck={false}
               value={source}
