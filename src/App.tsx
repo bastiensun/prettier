@@ -90,10 +90,9 @@ export const App = (): JSX.Element => {
   return (
     <>
       <div className="m-10">
-        <div className="flex flex-wrap space-x-10 space-y-10">
+        <div className="grid grid-cols-1 gap-10 xl:grid-cols-2">
           <div>
             <Textarea
-              cols={120}
               onChange={handleChange}
               onPaste={handlePaste}
               rows={(source.match(/\n/gu)?.length ?? 0) + 1}
