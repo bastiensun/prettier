@@ -27,4 +27,28 @@ module.exports = {
       { avoidEscape: true, allowTemplateLiterals: false },
     ],
   },
+  overrides: [
+    {
+      files: [
+        "*.tsx",
+      ],
+      extends: ["canonical/jsx-a11y"],
+      plugins: ["tailwindcss"],
+      rules: {
+        "tailwindcss/classnames-order": "error",
+        "tailwindcss/enforces-negative-arbitrary-values": "error",
+        "tailwindcss/enforces-shorthand": "error",
+        "tailwindcss/migration-from-tailwind-2": "error",
+        "tailwindcss/no-arbitrary-value": "error",
+        "tailwindcss/no-contradicting-classname": "error",
+        "tailwindcss/no-custom-classname": [
+          "error",
+          {
+            "config": "tailwind.config.js",
+            "cssFiles": []
+          }
+        ]
+      }
+    }
+  ]
 };
