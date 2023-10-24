@@ -1,3 +1,4 @@
+import { Textarea } from "@/components/ui/textarea";
 import { format } from "prettier";
 // @ts-expect-error Could not find a declaration file for module `prettier-plugin-java`.
 import parserJava from "prettier-plugin-java";
@@ -48,32 +49,34 @@ export const App = (): JSX.Element => {
   };
 
   return (
-    <div style={{ display: "flex", flexWrap: "wrap" }}>
-      <div>
-        <textarea
-          cols={120}
-          onChange={handleChange}
-          rows={(source.match(/\n/gu)?.length ?? 0) + 10}
-          spellCheck={false}
-          value={source}
-        />
-      </div>
-      <div>
-        <Highlight code={result} language="kotlin" theme={themes.oneLight}>
-          {({ getLineProps, getTokenProps, style, tokens }): JSX.Element => (
-            <pre style={style}>
-              {/* eslint-disable react/no-array-index-key*/}
-              {tokens.map((line, lineIndex) => (
-                <div key={lineIndex} {...getLineProps({ line })}>
-                  {line.map((token, tokenIndex) => (
-                    <span key={tokenIndex} {...getTokenProps({ token })} />
-                  ))}
-                </div>
-              ))}
-              {/* eslint-enable react/no-array-index-key */}
-            </pre>
-          )}
-        </Highlight>
+    <div className="m-10">
+      <div className="flex flex-wrap space-x-10 space-y-10">
+        <div>
+          <Textarea
+            cols={120}
+            onChange={handleChange}
+            rows={(source.match(/\n/gu)?.length ?? 0) + 1}
+            spellCheck={false}
+            value={source}
+          />
+        </div>
+        <div>
+          <Highlight code={result} language="kotlin" theme={themes.oneLight}>
+            {({ getLineProps, getTokenProps, style, tokens }): JSX.Element => (
+              <pre style={style}>
+                {/* eslint-disable react/no-array-index-key*/}
+                {tokens.map((line, lineIndex) => (
+                  <div key={lineIndex} {...getLineProps({ line })}>
+                    {line.map((token, tokenIndex) => (
+                      <span key={tokenIndex} {...getTokenProps({ token })} />
+                    ))}
+                  </div>
+                ))}
+                {/* eslint-enable react/no-array-index-key */}
+              </pre>
+            )}
+          </Highlight>
+        </div>
       </div>
     </div>
   );
