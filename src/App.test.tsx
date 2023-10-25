@@ -3,7 +3,13 @@ import "@testing-library/jest-dom/vitest";
 import { App } from "./App";
 import { render, screen } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
-import { expect, test } from "vitest";
+import { afterEach, expect, test, vi } from "vitest";
+
+afterEach(() => {
+  vi.clearAllMocks();
+  vi.resetAllMocks();
+  vi.restoreAllMocks();
+});
 
 test("happy path", async () => {
   // Arrange
@@ -66,6 +72,50 @@ test("on paste", async () => {
 
   // Assert
   expect(textarea).toHaveDisplayValue(unformattedCode);
-  expect(screen.getByRole("button", { name: formattedCode }));
   expect(screen.getByText(/copied to clipboard/iu));
+
+  // Act
+  await user.hover(screen.getByRole("button", { name: formattedCode }));
+
+  // Assert
+  expect(
+    screen.getByRole("tooltip", { name: /copied to clipboard/iu }),
+  ).toBeVisible();
+});
+
+test("on hover", async () => {
+  // Arrange
+  const user = userEvent.setup();
+
+  // Act
+  render(<App />);
+  const formattedCode = screen.getByRole("button", {
+    name: 'class HelloWorld { public static void main ( String [ ] args ) { System . out . println ( "Hello, World!" ) ; } }',
+  });
+  await user.hover(formattedCode);
+
+  // Assert
+  expect(
+    screen.getByRole("tooltip", { name: /copy to clipboard/iu }),
+  ).toBeVisible();
+
+  // Act
+  await user.click(formattedCode);
+
+  // Assert
+  expect(
+    screen.getByRole("tooltip", { name: /copied to clipboard/iu }),
+  ).toBeVisible();
+
+  // Act
+  const textarea = screen.getByRole("textbox");
+  await user.clear(textarea);
+  await user.type(textarea, "class HelloWorld {\\{}{\\}}");
+
+  await user.hover(formattedCode);
+
+  // Assert
+  expect(
+    screen.getByRole("tooltip", { name: /copy to clipboard/iu }),
+  ).toBeVisible();
 });

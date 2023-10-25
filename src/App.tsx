@@ -1,5 +1,11 @@
 import { Textarea } from "@/components/ui/textarea";
 import { Toaster } from "@/components/ui/toaster";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
 import { format } from "prettier";
 // @ts-expect-error Could not find a declaration file for module `prettier-plugin-java`.
@@ -27,9 +33,14 @@ const formattedPlaceholder = `class HelloWorld {
     }
 }`;
 
+const copyToClipboardMessage = "📋 Copy to clipboard";
+const copiedToClipboardMessage = "✅ Copied to clipboard!";
+
 export const App = (): JSX.Element => {
-  const [source, setSource] = useState(placeholder);
+  const [isTooltipOpen, setIsTooltipOpen] = useState(false);
   const [result, setResult] = useState(formattedPlaceholder);
+  const [source, setSource] = useState(placeholder);
+  const [tooltipMessage, setTooltipMessage] = useState(copyToClipboardMessage);
   const { toast } = useToast();
 
   const handleChange = async (
@@ -54,6 +65,7 @@ export const App = (): JSX.Element => {
     }
 
     setResult(formatted);
+    setTooltipMessage(copyToClipboardMessage);
   };
 
   const handlePaste = async (
@@ -75,20 +87,20 @@ export const App = (): JSX.Element => {
     await navigator.clipboard.writeText(formatted);
 
     toast({
-      description: "📋 Copied to clipboard!",
+      description: copiedToClipboardMessage,
     });
+
+    setTooltipMessage(copiedToClipboardMessage);
   };
 
   const handleClick = async (): Promise<void> => {
     await navigator.clipboard.writeText(result);
-
-    toast({
-      description: "📋 Copied to clipboard!",
-    });
+    setIsTooltipOpen(true);
+    setTooltipMessage(copiedToClipboardMessage);
   };
 
   return (
-    <>
+    <TooltipProvider>
       <div className="m-10">
         <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
           ☕ Prettier Java{" "}
@@ -106,36 +118,52 @@ export const App = (): JSX.Element => {
               value={source}
             />
           </div>
-          <div
-            onClick={handleClick}
-            onKeyDown={handleClick}
-            role="button"
-            tabIndex={0}
+          <Tooltip
+            delayDuration={0}
+            onOpenChange={(open): void => setIsTooltipOpen(open)}
+            open={isTooltipOpen}
           >
-            <Highlight code={result} language="kotlin" theme={themes.oneLight}>
-              {({
-                getLineProps,
-                getTokenProps,
-                style,
-                tokens,
-              }): JSX.Element => (
-                <pre style={style}>
-                  {/* eslint-disable react/no-array-index-key*/}
-                  {tokens.map((line, lineIndex) => (
-                    <div key={lineIndex} {...getLineProps({ line })}>
-                      {line.map((token, tokenIndex) => (
-                        <span key={tokenIndex} {...getTokenProps({ token })} />
+            <TooltipTrigger asChild>
+              <div
+                onClick={handleClick}
+                onKeyDown={handleClick}
+                role="button"
+                tabIndex={0}
+              >
+                <Highlight
+                  code={result}
+                  language="kotlin"
+                  theme={themes.oneLight}
+                >
+                  {({
+                    getLineProps,
+                    getTokenProps,
+                    style,
+                    tokens,
+                  }): JSX.Element => (
+                    <pre style={style}>
+                      {/* eslint-disable react/no-array-index-key*/}
+                      {tokens.map((line, lineIndex) => (
+                        <div key={lineIndex} {...getLineProps({ line })}>
+                          {line.map((token, tokenIndex) => (
+                            <span
+                              key={tokenIndex}
+                              {...getTokenProps({ token })}
+                            />
+                          ))}
+                        </div>
                       ))}
-                    </div>
-                  ))}
-                  {/* eslint-enable react/no-array-index-key */}
-                </pre>
-              )}
-            </Highlight>
-          </div>
+                      {/* eslint-enable react/no-array-index-key */}
+                    </pre>
+                  )}
+                </Highlight>
+              </div>
+            </TooltipTrigger>
+            <TooltipContent align="start">{tooltipMessage}</TooltipContent>
+          </Tooltip>
         </div>
       </div>
       <Toaster />
-    </>
+    </TooltipProvider>
   );
 };
