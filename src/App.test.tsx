@@ -74,15 +74,17 @@ test("on paste", async () => {
 
   // Assert
   expect(textarea).toHaveDisplayValue(unformattedCode);
-  expect(screen.getByText(/copied to clipboard/iu));
+  expect(screen.getByText(/copied to clipboard/iu)).toBeVisible();
 
   // Act
   await user.hover(screen.getByRole("button", { name: formattedCode }));
 
   // Assert
-  expect(
-    screen.getByRole("tooltip", { name: /copied to clipboard/iu }),
-  ).toBeVisible();
+  waitFor(() =>
+    expect(
+      screen.getByRole("tooltip", { name: /copied to clipboard/iu }),
+    ).toBeVisible(),
+  );
 });
 
 test("on hover", async () => {
@@ -91,7 +93,7 @@ test("on hover", async () => {
 
   // Act
   render(<App />);
-  const formattedCode = screen.getByRole("button", {
+  const formattedCode = await screen.findByRole("button", {
     name: 'class HelloWorld { public static void main ( String [ ] args ) { System . out . println ( "Hello, World!" ) ; } }',
   });
   await user.hover(formattedCode);
