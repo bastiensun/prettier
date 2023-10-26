@@ -1,7 +1,7 @@
 // eslint-disable-next-line import/no-unassigned-import
 import "@testing-library/jest-dom/vitest";
 import { App } from "./App";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
 import { afterEach, expect, test, vi } from "vitest";
 
@@ -52,7 +52,9 @@ test("happy path", async () => {
   );
 
   // Assert
-  expect(screen.getByText(/copied to clipboard/iu));
+  waitFor(() =>
+    expect(screen.getByText(/copied to clipboard/iu)).toBeVisible(),
+  );
 });
 
 test("on paste", async () => {
