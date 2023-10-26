@@ -1,5 +1,6 @@
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { formatJava } from "@/format-java";
 import { FormattedCode } from "@/formatted-code";
 import { UnformattedCode } from "@/unformatted-code";
 import { type JSX, useState } from "react";
@@ -12,6 +13,8 @@ const UNFORMATTED_CODE_EXAMPLE = `class  HelloWorld
     }
 }`;
 
+const FORMATTED_CODE_EXAMPLE = await formatJava(UNFORMATTED_CODE_EXAMPLE);
+
 const COPY_MESSAGE = "📋 Copy to clipboard";
 const COPIED_MESSAGE = "✅ Copied to clipboard!";
 
@@ -19,10 +22,11 @@ export const App = (): JSX.Element => {
   const [unformattedCode, setUnformattedCode] = useState(
     UNFORMATTED_CODE_EXAMPLE,
   );
+  const [formattedCode, setFormattedCode] = useState(FORMATTED_CODE_EXAMPLE);
+
   const [tooltipMessage, setTooltipMessage] = useState(COPY_MESSAGE);
 
   const resetTooltipMessage = (): void => setTooltipMessage(COPY_MESSAGE);
-
   const setTooltipToCopied = (): void => setTooltipMessage(COPIED_MESSAGE);
 
   return (
@@ -38,6 +42,7 @@ export const App = (): JSX.Element => {
           <div>
             <UnformattedCode
               copiedMessage={COPIED_MESSAGE}
+              setFormattedCode={setFormattedCode}
               setTooltipToCopied={setTooltipToCopied}
               setUnformattedCode={setUnformattedCode}
               unformattedCode={unformattedCode}
@@ -45,10 +50,10 @@ export const App = (): JSX.Element => {
           </div>
           <div>
             <FormattedCode
+              formattedCode={formattedCode}
               resetTooltipMessage={resetTooltipMessage}
               setTooltipToCopied={setTooltipToCopied}
               tooltipMessage={tooltipMessage}
-              unformattedCode={unformattedCode}
             />
           </div>
         </div>

@@ -1,10 +1,11 @@
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { formatJava } from "@/format-java";
-import { type ChangeEvent, type JSX } from "react";
+import { type ChangeEvent, type ClipboardEvent, type JSX } from "react";
 
 type UnformattedCodeProps = {
   readonly copiedMessage: string;
+  readonly setFormattedCode: (code: string) => void;
   readonly setTooltipToCopied: () => void;
   readonly setUnformattedCode: (code: string) => void;
   readonly unformattedCode: string;
@@ -12,6 +13,7 @@ type UnformattedCodeProps = {
 
 export const UnformattedCode = ({
   copiedMessage,
+  setFormattedCode,
   setTooltipToCopied,
   setUnformattedCode,
   unformattedCode,
@@ -20,12 +22,30 @@ export const UnformattedCode = ({
 
   const handleChange = async (
     event: ChangeEvent<HTMLTextAreaElement>,
-  ): Promise<void> => setUnformattedCode(event.target.value);
+  ): Promise<void> => {
+    setUnformattedCode(event.target.value);
 
-  const handlePaste = async (): Promise<void> => {
     let formattedCode = "";
     try {
-      formattedCode = await formatJava(unformattedCode);
+      formattedCode = await formatJava(event.target.value);
+    } catch (error) {
+      if (error instanceof Error) {
+        setFormattedCode(error.message);
+        return;
+      }
+    }
+
+    setFormattedCode(formattedCode);
+  };
+
+  const handlePaste = async (
+    event: ClipboardEvent<HTMLTextAreaElement>,
+  ): Promise<void> => {
+    let formattedCode = "";
+    try {
+      formattedCode = await formatJava(
+        event.clipboardData.getData("text/plain"),
+      );
     } catch {
       return;
     }

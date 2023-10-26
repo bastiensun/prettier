@@ -3,49 +3,25 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { formatJava } from "@/format-java";
 import { Highlight, themes } from "prism-react-renderer";
-import { type JSX, useEffect, useState } from "react";
+import { type JSX, useState } from "react";
 
 type FormattedCodeProps = {
+  readonly formattedCode: string;
   readonly resetTooltipMessage: () => void;
   readonly setTooltipToCopied: () => void;
   readonly tooltipMessage: string;
-  readonly unformattedCode: string;
 };
 
 export const FormattedCode = ({
-  resetTooltipMessage,
+  formattedCode,
   setTooltipToCopied,
   tooltipMessage,
-  unformattedCode,
 }: FormattedCodeProps): JSX.Element => {
-  const [content, setContent] = useState("");
   const [isTooltipOpen, setIsTooltipOpen] = useState(false);
 
-  useEffect(() => {
-    const formatUnformattedCode = async (): Promise<void> => {
-      let formattedCode = "";
-      try {
-        formattedCode = await formatJava(unformattedCode);
-      } catch (error) {
-        if (error instanceof Error) {
-          setContent(error.message);
-        }
-
-        return;
-      }
-
-      resetTooltipMessage();
-      setContent(formattedCode);
-    };
-
-    formatUnformattedCode();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [unformattedCode]);
-
   const handleClick = async (): Promise<void> => {
-    await navigator.clipboard.writeText(content);
+    await navigator.clipboard.writeText(formattedCode);
     setIsTooltipOpen(true);
     setTooltipToCopied();
   };
@@ -63,7 +39,11 @@ export const FormattedCode = ({
           role="button"
           tabIndex={0}
         >
-          <Highlight code={content} language="kotlin" theme={themes.oneLight}>
+          <Highlight
+            code={formattedCode}
+            language="kotlin"
+            theme={themes.oneLight}
+          >
             {({ getLineProps, getTokenProps, style, tokens }): JSX.Element => (
               <pre style={style}>
                 {/* eslint-disable react/no-array-index-key*/}

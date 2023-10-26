@@ -119,7 +119,9 @@ test("on hover", async () => {
   await user.hover(formattedCode);
 
   // Assert
-  expect(
-    screen.getByRole("tooltip", { name: /copy to clipboard/iu }),
-  ).toBeVisible();
+  waitFor(() =>
+    expect(
+      screen.getByRole("tooltip", { name: /copy to clipboard/iu }),
+    ).toBeVisible(),
+  );
 });
