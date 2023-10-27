@@ -1,6 +1,6 @@
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
-import { formatJava } from "@/format-java";
+import { formatJava } from "@/lib/format-java";
 import { type ChangeEvent, type ClipboardEvent, type JSX } from "react";
 
 type UnformattedCodeProps = {
