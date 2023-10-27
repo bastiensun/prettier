@@ -3,6 +3,7 @@ import "@testing-library/jest-dom/vitest";
 import { App } from "./App";
 import { cleanup, render, screen } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
+import { MemoryRouter } from "react-router-dom";
 import { afterEach, expect, test, vi } from "vitest";
 
 afterEach(() => {
@@ -17,7 +18,11 @@ test("happy path", async () => {
   const user = userEvent.setup();
 
   // Act
-  render(<App />);
+  render(
+    <MemoryRouter>
+      <App />
+    </MemoryRouter>,
+  );
 
   // Assert
   expect(
@@ -33,7 +38,7 @@ test("happy path", async () => {
     }
 }`);
 
-  const formattedCode = screen.getByRole("button", {
+  const formattedCode = await screen.findByRole("button", {
     name: 'class HelloWorld { public static void main ( String [ ] args ) { System . out . println ( "Hello, World!" ) ; } }',
   });
   expect(formattedCode).toBeVisible();
@@ -66,7 +71,11 @@ test("on paste on success", async () => {
   const formattedCode = "class HelloWorld { }";
 
   // Act
-  render(<App />);
+  render(
+    <MemoryRouter>
+      <App />
+    </MemoryRouter>,
+  );
 
   const unformattedCodeTextarea = screen.getByRole("textbox");
   await user.click(unformattedCodeTextarea);
@@ -92,7 +101,11 @@ test("on paste on error", async () => {
   const invalidCode = "invalid code";
 
   // Act
-  render(<App />);
+  render(
+    <MemoryRouter>
+      <App />
+    </MemoryRouter>,
+  );
 
   const unformattedCodeTextarea = screen.getByRole("textbox");
   await user.click(unformattedCodeTextarea);
@@ -120,8 +133,12 @@ test("tooltip", async () => {
   const user = userEvent.setup();
 
   // Act
-  render(<App />);
-  const formattedCode = screen.getByRole("button", {
+  render(
+    <MemoryRouter>
+      <App />
+    </MemoryRouter>,
+  );
+  const formattedCode = await screen.findByRole("button", {
     name: 'class HelloWorld { public static void main ( String [ ] args ) { System . out . println ( "Hello, World!" ) ; } }',
   });
   await user.hover(formattedCode);

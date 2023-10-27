@@ -6,7 +6,6 @@ import { type ChangeEvent, type ClipboardEvent, type JSX } from "react";
 type UnformattedCodeProps = {
   readonly copiedMessage: string;
   readonly resetTooltipMessage: () => void;
-  readonly setFormattedCode: (code: string) => void;
   readonly setTooltipToCopied: () => void;
   readonly setUnformattedCode: (code: string) => void;
   readonly unformattedCode: string;
@@ -15,7 +14,6 @@ type UnformattedCodeProps = {
 export const UnformattedCode = ({
   copiedMessage,
   resetTooltipMessage,
-  setFormattedCode,
   setTooltipToCopied,
   setUnformattedCode,
   unformattedCode,
@@ -26,18 +24,6 @@ export const UnformattedCode = ({
     event: ChangeEvent<HTMLTextAreaElement>,
   ): Promise<void> => {
     setUnformattedCode(event.target.value);
-
-    let formattedCode = "";
-    try {
-      formattedCode = await formatJava(event.target.value);
-    } catch (error) {
-      if (error instanceof Error) {
-        setFormattedCode(error.message);
-        return;
-      }
-    }
-
-    setFormattedCode(formattedCode);
     resetTooltipMessage();
   };
 
