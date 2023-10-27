@@ -1,6 +1,5 @@
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { formatJava } from "@/format-java";
 import { FormattedCode } from "@/formatted-code";
 import { UnformattedCode } from "@/unformatted-code";
 import { type JSX, useState } from "react";
@@ -13,7 +12,12 @@ const UNFORMATTED_CODE_EXAMPLE = `class  HelloWorld
     }
 }`;
 
-const FORMATTED_CODE_EXAMPLE = await formatJava(UNFORMATTED_CODE_EXAMPLE);
+const FORMATTED_CODE_EXAMPLE = `class HelloWorld {
+
+    public static void main(String[] args) {
+        System.out.println("Hello, World!");
+    }
+}`;
 
 const COPY_MESSAGE = "📋 Copy to clipboard";
 const COPIED_MESSAGE = "✅ Copied to clipboard!";
