@@ -29,9 +29,7 @@ module.exports = {
   },
   overrides: [
     {
-      files: [
-        "*.tsx",
-      ],
+      files: ["*.tsx"],
       extends: ["canonical/jsx-a11y"],
       plugins: ["tailwindcss"],
       rules: {
@@ -44,11 +42,11 @@ module.exports = {
         "tailwindcss/no-custom-classname": [
           "error",
           {
-            "config": "tailwind.config.js",
-            "cssFiles": []
-          }
-        ]
-      }
-    }
-  ]
+            config: "tailwind.config.js",
+            cssFiles: [],
+          },
+        ],
+      },
+    },
+  ],
 };

@@ -7,10 +7,10 @@ updates:
     groups:
       dependencies-with-minor-and-patch-updates:
         patterns:
-        - "*"
+          - "*"
         update-types:
-        - "minor"
-        - "patch"
+          - "minor"
+          - "patch"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
