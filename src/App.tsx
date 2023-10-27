@@ -42,6 +42,7 @@ export const App = (): JSX.Element => {
           <div>
             <UnformattedCode
               copiedMessage={COPIED_MESSAGE}
+              resetTooltipMessage={resetTooltipMessage}
               setFormattedCode={setFormattedCode}
               setTooltipToCopied={setTooltipToCopied}
               setUnformattedCode={setUnformattedCode}
@@ -51,7 +52,6 @@ export const App = (): JSX.Element => {
           <div>
             <FormattedCode
               formattedCode={formattedCode}
-              resetTooltipMessage={resetTooltipMessage}
               setTooltipToCopied={setTooltipToCopied}
               tooltipMessage={tooltipMessage}
             />

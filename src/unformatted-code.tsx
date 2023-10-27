@@ -5,6 +5,7 @@ import { type ChangeEvent, type ClipboardEvent, type JSX } from "react";
 
 type UnformattedCodeProps = {
   readonly copiedMessage: string;
+  readonly resetTooltipMessage: () => void;
   readonly setFormattedCode: (code: string) => void;
   readonly setTooltipToCopied: () => void;
   readonly setUnformattedCode: (code: string) => void;
@@ -13,6 +14,7 @@ type UnformattedCodeProps = {
 
 export const UnformattedCode = ({
   copiedMessage,
+  resetTooltipMessage,
   setFormattedCode,
   setTooltipToCopied,
   setUnformattedCode,
@@ -36,6 +38,7 @@ export const UnformattedCode = ({
     }
 
     setFormattedCode(formattedCode);
+    resetTooltipMessage();
   };
 
   const handlePaste = async (

@@ -8,7 +8,6 @@ import { type JSX, useState } from "react";
 
 type FormattedCodeProps = {
   readonly formattedCode: string;
-  readonly resetTooltipMessage: () => void;
   readonly setTooltipToCopied: () => void;
   readonly tooltipMessage: string;
 };
