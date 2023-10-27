@@ -63,12 +63,14 @@ export const UnformattedCode = ({
   };
 
   return (
-    <Textarea
-      onChange={handleChange}
-      onPaste={handlePaste}
-      rows={(unformattedCode.match(/\n/gu)?.length ?? 0) + 1}
-      spellCheck={false}
-      value={unformattedCode}
-    />
+    <pre>
+      <Textarea
+        onChange={handleChange}
+        onPaste={handlePaste}
+        rows={(unformattedCode.match(/\n/gu)?.length ?? 0) + 1}
+        spellCheck={false}
+        value={unformattedCode}
+      />
+    </pre>
   );
 };
