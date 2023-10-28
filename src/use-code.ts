@@ -10,9 +10,9 @@ const useUnformattedCode = (
   });
   const [unformattedCode, setUnformattedCode] = useState("");
 
-  useEffect(() => {
-    const encodedData = searchParameters.get("data");
+  const encodedData = searchParameters.get("data");
 
+  useEffect(() => {
     if (!encodedData) {
       setUnformattedCode("");
       return;
@@ -27,24 +27,35 @@ const useUnformattedCode = (
     }
 
     setUnformattedCode(decodedData);
-  }, [searchParameters]);
+  }, []);
 
-  const synchronizeUnformattedCodeAndDataQueryString = (code: string): void => {
-    if (code === "") {
-      setSearchParameters({});
+  const synchronizeUnformattedCodeAndDataQueryString = (
+    updatedUnformattedCode: string,
+  ): void => {
+    if (updatedUnformattedCode === "") {
+      setSearchParameters((previousSearchParameters) => {
+        previousSearchParameters.delete("data");
+        return searchParameters;
+      });
+
       setUnformattedCode("");
+
       return;
     }
 
-    let encodedData: string;
+    let updatedEncodedData: string;
     try {
-      encodedData = btoa(code);
+      updatedEncodedData = btoa(updatedUnformattedCode);
     } catch {
       return;
     }
 
-    setSearchParameters({ data: encodedData });
-    setUnformattedCode(code);
+    setSearchParameters((previousSearchParameters) => {
+      previousSearchParameters.set("data", updatedEncodedData);
+      return previousSearchParameters;
+    });
+
+    setUnformattedCode(updatedUnformattedCode);
   };
 
   return [unformattedCode, synchronizeUnformattedCodeAndDataQueryString];

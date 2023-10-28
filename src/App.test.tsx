@@ -181,3 +181,34 @@ test("tooltip", async () => {
     screen.getByRole("tooltip", { name: /copied to clipboard/iu }),
   ).toBeVisible();
 });
+
+test("diff view", async () => {
+  // Arrange
+  const user = userEvent.setup();
+
+  // Act
+  render(
+    <MemoryRouter>
+      <App />
+    </MemoryRouter>,
+  );
+
+  // Assert
+  const diffViewSwitch = screen.getByRole("switch", { name: /diff view/iu });
+  expect(diffViewSwitch).not.toBeChecked();
+
+  // Act
+  await user.click(diffViewSwitch);
+
+  // Assert
+  expect(diffViewSwitch).toBeChecked();
+  expect(screen.queryByRole("textbox")).not.toBeInTheDocument();
+  expect(screen.getByRole("table")).toBeVisible();
+
+  // Act
+  await user.click(diffViewSwitch);
+  // Assert
+  expect(diffViewSwitch).not.toBeChecked();
+  expect(screen.getByRole("textbox")).toBeVisible();
+  expect(screen.queryByRole("table")).not.toBeInTheDocument();
+});
