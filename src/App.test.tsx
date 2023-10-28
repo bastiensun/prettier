@@ -26,8 +26,10 @@ test("happy path", async () => {
 
   // Assert
   expect(
-    screen.getByRole("heading", { name: /prettier java playground/iu }),
-  ).toBeVisible();
+    screen.getByRole("heading", {
+      name: /prettier java playground/iu,
+    }),
+  ).toHaveTextContent(/prettier java playground/iu);
 
   const unformattedCodeTextarea = screen.getByRole("textbox");
   expect(unformattedCodeTextarea).toHaveDisplayValue(`class  HelloWorld
@@ -42,6 +44,10 @@ test("happy path", async () => {
     name: 'class HelloWorld { public static void main ( String [ ] args ) { System . out . println ( "Hello, World!" ) ; } }',
   });
   expect(formattedCode).toBeVisible();
+
+  expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
+  expect(unformattedCodeTextarea).toHaveAttribute("rows", "7");
+  expect(unformattedCodeTextarea).toHaveAttribute("spellcheck", "false");
 
   // Act
   await user.clear(unformattedCodeTextarea);

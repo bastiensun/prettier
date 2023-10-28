@@ -36,7 +36,7 @@ const useUnformattedCode = (
       return;
     }
 
-    let encodedData = "";
+    let encodedData: string;
     try {
       encodedData = btoa(code);
     } catch {

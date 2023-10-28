@@ -1,0 +1,11 @@
+{
+  "$schema": "./node_modules/@stryker-mutator/core/schema/stryker-schema.json",
+  "testRunner": "vitest",
+  "checkers": ["typescript"],
+  "mutate": [
+    "{src,lib}/**/*.ts?(x)",
+    "!{src,lib}/**/?(*.)+(spec|test).ts?(x)",
+    "!src/main.tsx",
+    "!src/components/ui/**"
+  ]
+}

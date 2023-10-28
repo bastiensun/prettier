@@ -30,7 +30,7 @@ export const UnformattedCode = ({
   const handlePaste = async (
     event: ClipboardEvent<HTMLTextAreaElement>,
   ): Promise<void> => {
-    let formattedCode = "";
+    let formattedCode: string;
     try {
       formattedCode = await formatJava(
         event.clipboardData.getData("text/plain"),
