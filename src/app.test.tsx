@@ -212,4 +212,15 @@ test("diff view", async () => {
   expect(diffViewSwitch).not.toBeChecked();
   expect(screen.getByRole("textbox")).toBeVisible();
   expect(screen.queryByRole("table")).not.toBeInTheDocument();
+
+  // Act
+  await user.click(diffViewSwitch);
+  await user.click(
+    screen.getByRole("button", {
+      name: '1 - class HelloWorld 1 + class HelloWorld { 2 - { 3 - public static void main( String[ ] args ) 2 + public static void main(String[] args) { 4 - { 3 + System.out.println("Hello, World!"); 5 - System.out.println( "Hello, World!" ) ; 4 + 6 5 } 7 6 } 1 - class HelloWorld 1 + class HelloWorld { 2 - { 3 - public static void main( String[ ] args ) 2 + public static void main(String[] args) { 4 - { 3 + System.out.println("Hello, World!"); 5 - System.out.println( "Hello, World!" ) ; 4 + 6 } 5 } 7 } 6 } ;',
+    }),
+  );
+
+  // Assert
+  expect(diffViewSwitch).not.toBeChecked();
 });

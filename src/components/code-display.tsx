@@ -5,6 +5,7 @@ import { useCode } from "@/lib/use-code";
 import { type JSX, useState } from "react";
 
 type CodeProps = {
+  readonly disableDiffView: () => void;
   readonly isDiffView: boolean;
 };
 
@@ -19,7 +20,10 @@ const UNFORMATTED_CODE_EXAMPLE = `class  HelloWorld
 const COPY_MESSAGE = "📋 Copy to clipboard";
 const COPIED_MESSAGE = "✅ Copied to clipboard!";
 
-export const CodeDisplay = ({ isDiffView }: CodeProps): JSX.Element => {
+export const CodeDisplay = ({
+  disableDiffView,
+  isDiffView,
+}: CodeProps): JSX.Element => {
   const { formattedCode, setUnformattedCode, unformattedCode } = useCode(
     UNFORMATTED_CODE_EXAMPLE,
   );
@@ -29,7 +33,16 @@ export const CodeDisplay = ({ isDiffView }: CodeProps): JSX.Element => {
   const setTooltipToCopied = (): void => setTooltipMessage(COPIED_MESSAGE);
 
   if (isDiffView) {
-    return <DiffView newValue={formattedCode} oldValue={unformattedCode} />;
+    return (
+      <div
+        onClick={disableDiffView}
+        onKeyDown={disableDiffView}
+        role="button"
+        tabIndex={0}
+      >
+        <DiffView newValue={formattedCode} oldValue={unformattedCode} />;
+      </div>
+    );
   }
 
   return (

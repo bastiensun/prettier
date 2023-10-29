@@ -10,6 +10,8 @@ import { type JSX } from "react";
 export const App = (): JSX.Element => {
   const [isDiffView, setIsDiffView] = useDiffView();
 
+  const disableDiffView = (): void => setIsDiffView(false);
+
   return (
     <TooltipProvider>
       <div className="m-10">
@@ -23,7 +25,10 @@ export const App = (): JSX.Element => {
           <Label htmlFor="airplane-mode">Diff View</Label>
         </div>
         <div className="mt-6">
-          <CodeDisplay isDiffView={isDiffView} />
+          <CodeDisplay
+            disableDiffView={disableDiffView}
+            isDiffView={isDiffView}
+          />
         </div>
       </div>
       <Toaster />
