@@ -1,6 +1,6 @@
 // eslint-disable-next-line import/no-unassigned-import
 import "@testing-library/jest-dom/vitest";
-import { App } from "./App";
+import { App } from "./app";
 import { cleanup, render, screen } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
