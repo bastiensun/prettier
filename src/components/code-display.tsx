@@ -1,6 +1,6 @@
-import { FormattedCode } from "@/formatted-code";
-import { UnformattedCode } from "@/unformatted-code";
-import { useCode } from "@/use-code";
+import { FormattedCode } from "@/components/formatted-code";
+import { UnformattedCode } from "@/components/unformatted-code";
+import { useCode } from "@/lib/use-code";
 import { type JSX, useState } from "react";
 import ReactDiffViewer, { DiffMethod } from "react-diff-viewer-continued";
 
