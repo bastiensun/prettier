@@ -203,10 +203,11 @@ test("diff view", async () => {
   // Assert
   expect(diffViewSwitch).toBeChecked();
   expect(screen.queryByRole("textbox")).not.toBeInTheDocument();
-  expect(screen.getByRole("table")).toBeVisible();
+  expect(screen.getAllByRole("table")).toHaveLength(2);
 
   // Act
   await user.click(diffViewSwitch);
+
   // Assert
   expect(diffViewSwitch).not.toBeChecked();
   expect(screen.getByRole("textbox")).toBeVisible();

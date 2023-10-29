@@ -1,8 +1,8 @@
+import { DiffView } from "@/components/diff-view";
 import { FormattedCode } from "@/components/formatted-code";
 import { UnformattedCode } from "@/components/unformatted-code";
 import { useCode } from "@/lib/use-code";
 import { type JSX, useState } from "react";
-import ReactDiffViewer, { DiffMethod } from "react-diff-viewer-continued";
 
 type CodeProps = {
   readonly isDiffView: boolean;
@@ -29,13 +29,7 @@ export const CodeDisplay = ({ isDiffView }: CodeProps): JSX.Element => {
   const setTooltipToCopied = (): void => setTooltipMessage(COPIED_MESSAGE);
 
   if (isDiffView) {
-    return (
-      <ReactDiffViewer
-        compareMethod={DiffMethod.LINES}
-        newValue={formattedCode}
-        oldValue={unformattedCode}
-      />
-    );
+    return <DiffView newValue={formattedCode} oldValue={unformattedCode} />;
   }
 
   return (
