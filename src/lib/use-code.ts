@@ -27,6 +27,7 @@ const useUnformattedCode = (
     }
 
     setUnformattedCode(decodedData);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const synchronizeUnformattedCodeAndDataQueryString = (
