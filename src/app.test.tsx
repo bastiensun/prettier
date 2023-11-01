@@ -1,28 +1,15 @@
-// eslint-disable-next-line import/no-unassigned-import
-import "@testing-library/jest-dom/vitest";
-import { App } from "./app";
-import { cleanup, render, screen } from "@testing-library/react";
+import { render, renderWithRouter, screen } from "@/lib/test-utils";
+import { routes } from "@/routes";
 import { userEvent } from "@testing-library/user-event";
-import { MemoryRouter } from "react-router-dom";
-import { afterEach, expect, test, vi } from "vitest";
-
-afterEach(() => {
-  cleanup();
-  vi.clearAllMocks();
-  vi.resetAllMocks();
-  vi.restoreAllMocks();
-});
+import { createMemoryRouter, RouterProvider } from "react-router-dom";
+import { describe, expect, it, test } from "vitest";
 
 test("happy path", async () => {
   // Arrange
   const user = userEvent.setup();
 
   // Act
-  render(
-    <MemoryRouter>
-      <App />
-    </MemoryRouter>,
-  );
+  renderWithRouter();
 
   // Assert
   expect(
@@ -77,11 +64,7 @@ test("on paste on success", async () => {
   const formattedCode = "class HelloWorld { }";
 
   // Act
-  render(
-    <MemoryRouter>
-      <App />
-    </MemoryRouter>,
-  );
+  renderWithRouter();
 
   const unformattedCodeTextarea = screen.getByRole("textbox");
   await user.click(unformattedCodeTextarea);
@@ -107,11 +90,7 @@ test("on paste on error", async () => {
   const invalidCode = "invalid code";
 
   // Act
-  render(
-    <MemoryRouter>
-      <App />
-    </MemoryRouter>,
-  );
+  renderWithRouter();
 
   const unformattedCodeTextarea = screen.getByRole("textbox");
   await user.click(unformattedCodeTextarea);
@@ -139,11 +118,7 @@ test("tooltip", async () => {
   const user = userEvent.setup();
 
   // Act
-  render(
-    <MemoryRouter>
-      <App />
-    </MemoryRouter>,
-  );
+  renderWithRouter();
   const formattedCode = await screen.findByRole("button", {
     name: 'class HelloWorld { public static void main ( String [ ] args ) { System . out . println ( "Hello, World!" ) ; } }',
   });
@@ -185,13 +160,10 @@ test("tooltip", async () => {
 test("diff view", async () => {
   // Arrange
   const user = userEvent.setup();
+  const router = createMemoryRouter(routes);
 
   // Act
-  render(
-    <MemoryRouter>
-      <App />
-    </MemoryRouter>,
-  );
+  render(<RouterProvider router={router} />);
 
   // Assert
   const diffViewSwitch = screen.getByRole("switch", { name: /diff view/iu });
@@ -202,6 +174,9 @@ test("diff view", async () => {
 
   // Assert
   expect(diffViewSwitch).toBeChecked();
+  expect(router.state.location.search).toEqual(
+    `?${new URLSearchParams({ diff: "true" }).toString()}`,
+  );
   expect(screen.queryByRole("textbox")).not.toBeInTheDocument();
   expect(screen.getAllByRole("table")).toHaveLength(2);
 
@@ -210,6 +185,7 @@ test("diff view", async () => {
 
   // Assert
   expect(diffViewSwitch).not.toBeChecked();
+  expect(router.state.location.search).toEqual("");
   expect(screen.getByRole("textbox")).toBeVisible();
   expect(screen.queryByRole("table")).not.toBeInTheDocument();
 
@@ -223,4 +199,79 @@ test("diff view", async () => {
 
   // Assert
   expect(diffViewSwitch).not.toBeChecked();
+});
+
+describe("data query string", () => {
+  it("should not be decoded when it cannot be decoded", async () => {
+    // Arrange
+    const urlSearchParameters = new URLSearchParams({
+      data: "undefined",
+    });
+    const router = createMemoryRouter(routes, {
+      initialEntries: [`/?${urlSearchParameters.toString()}`],
+    });
+
+    // Act
+    render(<RouterProvider router={router} />);
+
+    // Assert
+    expect(screen.getByRole("textbox")).toHaveDisplayValue("");
+  });
+
+  it("should not be set when unformatted code is empty", async () => {
+    // Arrange
+    const user = userEvent.setup();
+    const router = createMemoryRouter(routes);
+
+    // Act
+    render(<RouterProvider router={router} />);
+
+    await user.clear(screen.getByRole("textbox"));
+
+    // Assert
+    expect(router.state.location.search).toEqual("");
+    expect(screen.getByRole("textbox")).toHaveDisplayValue("");
+  });
+
+  it("should not be set when unformatted code cannot be encoded", async () => {
+    // Arrange
+    const user = userEvent.setup();
+    const router = createMemoryRouter(routes);
+
+    // Act
+    render(<RouterProvider router={router} />);
+
+    const unformattedCodeTextarea = screen.getByRole("textbox");
+    await user.clear(unformattedCodeTextarea);
+    await user.type(unformattedCodeTextarea, "☀️");
+
+    // Assert
+    expect(router.state.location.search).toEqual("");
+    expect(unformattedCodeTextarea).toHaveDisplayValue("");
+  });
+
+  it("should be updated when unformatted code is updated", async () => {
+    // Arrange
+    const user = userEvent.setup();
+    const router = createMemoryRouter(routes);
+
+    const expectedUpdatedUnformattedCode = "record HelloWorld()";
+
+    // Act
+    render(<RouterProvider router={router} />);
+
+    const unformattedCodeTextarea = screen.getByRole("textbox");
+    await user.clear(unformattedCodeTextarea);
+    await user.type(unformattedCodeTextarea, expectedUpdatedUnformattedCode);
+
+    // Assert
+    expect(router.state.location.search).toEqual(
+      `?${new URLSearchParams({
+        data: btoa(expectedUpdatedUnformattedCode),
+      }).toString()}`,
+    );
+    expect(screen.getByRole("textbox")).toHaveDisplayValue(
+      expectedUpdatedUnformattedCode,
+    );
+  });
 });

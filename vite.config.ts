@@ -18,6 +18,10 @@ export default defineConfig({
     },
   },
   test: {
+    clearMocks: true,
     environment: "jsdom",
+    mockReset: true,
+    restoreMocks: true,
+    setupFiles: ["vitest.setup.ts"],
   },
 });
