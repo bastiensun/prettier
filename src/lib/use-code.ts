@@ -1,4 +1,5 @@
-import { formatJava } from "@/lib/format-java";
+import { format } from "@/lib/format";
+import { useLanguage } from "@/lib/use-language";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
@@ -27,8 +28,7 @@ const useUnformattedCode = (
     }
 
     setUnformattedCode(decodedData);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [encodedData]);
 
   const synchronizeUnformattedCodeAndDataQueryString = (
     updatedUnformattedCode: string,
@@ -69,6 +69,7 @@ export const useCode = (
   setUnformattedCode: (code: string) => void;
   unformattedCode: string;
 } => {
+  const [language] = useLanguage();
   const [unformattedCode, setUnformattedCode] =
     useUnformattedCode(initialState);
   const [formattedCode, setFormattedCode] = useState("");
@@ -77,7 +78,10 @@ export const useCode = (
     const runEffect = async (): Promise<void> => {
       let content;
       try {
-        content = await formatJava(unformattedCode);
+        content = await format({
+          code: unformattedCode,
+          language,
+        });
       } catch (error) {
         if (error instanceof Error) {
           setFormattedCode(error.message);
@@ -90,7 +94,7 @@ export const useCode = (
     };
 
     runEffect();
-  }, [unformattedCode]);
+  }, [language, unformattedCode]);
 
   return {
     formattedCode,

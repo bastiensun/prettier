@@ -3,8 +3,19 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { type Language, useLanguage } from "@/lib/use-language";
 import { Highlight, themes } from "prism-react-renderer";
 import { type JSX, useState } from "react";
+
+// eslint-disable-next-line consistent-return
+const getHighlightLanguage = (language: Language): string => {
+  switch (language) {
+    case "java":
+      return "kotlin";
+    case "json":
+      return "javascript";
+  }
+};
 
 type FormattedCodeProps = {
   readonly formattedCode: string;
@@ -17,6 +28,7 @@ export const FormattedCode = ({
   setTooltipToCopied,
   tooltipMessage,
 }: FormattedCodeProps): JSX.Element => {
+  const [language] = useLanguage();
   const [isTooltipOpen, setIsTooltipOpen] = useState(false);
 
   const handleClick = async (): Promise<void> => {
@@ -40,7 +52,7 @@ export const FormattedCode = ({
         >
           <Highlight
             code={formattedCode}
-            language="kotlin"
+            language={getHighlightLanguage(language)}
             theme={themes.oneLight}
           >
             {({ getLineProps, getTokenProps, style, tokens }): JSX.Element => (

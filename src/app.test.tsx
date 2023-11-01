@@ -2,7 +2,7 @@ import { render, renderWithRouter, screen } from "@/lib/test-utils";
 import { routes } from "@/routes";
 import { userEvent } from "@testing-library/user-event";
 import { createMemoryRouter, RouterProvider } from "react-router-dom";
-import { describe, expect, it, test } from "vitest";
+import { describe, expect, it, test, vi } from "vitest";
 
 test("happy path", async () => {
   // Arrange
@@ -208,7 +208,7 @@ describe("data query string", () => {
       data: "undefined",
     });
     const router = createMemoryRouter(routes, {
-      initialEntries: [`/?${urlSearchParameters.toString()}`],
+      initialEntries: [`/java?${urlSearchParameters.toString()}`],
     });
 
     // Act
@@ -274,4 +274,120 @@ describe("data query string", () => {
       expectedUpdatedUnformattedCode,
     );
   });
+});
+
+test("language pathname", async () => {
+  // Arrange
+  const user = userEvent.setup();
+  const router = createMemoryRouter(routes, { initialEntries: ["/"] });
+
+  // Act
+  render(<RouterProvider router={router} />);
+
+  // Assert
+  expect(router.state.location.pathname).toEqual("/java");
+
+  const title = screen.getByRole("heading", {
+    name: /prettier java playground/iu,
+  });
+  expect(title).toHaveTextContent(/prettier java playground/iu);
+
+  const unformattedCodeTextarea = screen.getByRole("textbox");
+  expect(unformattedCodeTextarea).toHaveTextContent(
+    'class HelloWorld { public static void main( String[ ] args ) { System.out.println( "Hello, World!" ) ; } }',
+  );
+
+  // Arrange
+  window.HTMLElement.prototype.hasPointerCapture = vi.fn();
+  window.HTMLElement.prototype.scrollIntoView = vi.fn();
+
+  // Act
+  const languageSelect = screen.getByRole("combobox");
+  await user.click(languageSelect);
+
+  // Assert
+  expect(
+    screen.getByRole("option", { name: /java/iu, selected: true }),
+  ).toBeVisible();
+
+  // Act
+  await user.click(
+    screen.getByRole("option", { name: /json/iu, selected: false }),
+  );
+  await user.click(languageSelect);
+
+  // Assert
+  expect(
+    screen.getByRole("option", { name: /json/iu, selected: true }),
+  ).toBeVisible();
+  expect(router.state.location.pathname).toEqual("/json");
+  expect(title).toHaveTextContent(/prettier json playground/iu);
+  expect(unformattedCodeTextarea).toHaveTextContent('{ "hello" : "world"}');
+
+  // Act
+  await user.click(
+    screen.getByRole("option", { name: /java/iu, selected: false }),
+  );
+
+  // Assert
+  expect(unformattedCodeTextarea).toHaveTextContent(
+    'class HelloWorld { public static void main( String[ ] args ) { System.out.println( "Hello, World!" ) ; } }',
+  );
+});
+
+test.each(["/invalid-language", "/invalid-language/other-pathname"])(
+  "invalid pathname ('%s')",
+  async (invalidPathname) => {
+    // Arrange
+    const user = userEvent.setup();
+    const router = createMemoryRouter(routes, {
+      initialEntries: [invalidPathname],
+    });
+
+    // Act
+    render(<RouterProvider router={router} />);
+
+    // Assert
+    expect(router.state.location.pathname).toEqual("/java");
+
+    // Arrange
+    window.HTMLElement.prototype.hasPointerCapture = vi.fn();
+    window.HTMLElement.prototype.scrollIntoView = vi.fn();
+
+    // Act
+    await user.click(screen.getByRole("combobox"));
+
+    // Assert
+    expect(
+      screen.getByRole("option", { name: /java/iu, selected: true }),
+    ).toBeVisible();
+  },
+);
+
+test("json", async () => {
+  // Arrange
+  const user = userEvent.setup();
+  const router = createMemoryRouter(routes, {
+    initialEntries: ["/json"],
+  });
+
+  window.HTMLElement.prototype.hasPointerCapture = vi.fn();
+  window.HTMLElement.prototype.scrollIntoView = vi.fn();
+
+  // Act
+  render(<RouterProvider router={router} />);
+
+  const unformattedCodeTextarea = screen.getByRole("textbox");
+  await user.clear(unformattedCodeTextarea);
+  await user.type(
+    unformattedCodeTextarea,
+    '{\\[}"Immortality","Heat Immunity","Inferno","Teleportation","Interdimensional travel"{\\]}',
+  );
+
+  // Assert
+  expect(
+    screen.getByRole("button", {
+      name: '[ "Immortality" , "Heat Immunity" , "Inferno" , "Teleportation" , "Interdimensional travel" ]',
+    }),
+  ).toBeVisible();
 });

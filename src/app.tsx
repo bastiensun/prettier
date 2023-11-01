@@ -1,4 +1,5 @@
 import { CodeDisplay } from "@/components/code-display";
+import { LanguageSelect } from "@/components/language-select";
 import { Title } from "@/components/title";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -14,6 +15,7 @@ export const App = (): JSX.Element => {
     <div className="m-10">
       <Title />
       <div className="mt-12 flex items-center space-x-2">
+        <LanguageSelect />
         <Switch
           checked={isDiffView}
           id="airplane-mode"

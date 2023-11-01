@@ -1,6 +1,7 @@
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
-import { formatJava } from "@/lib/format-java";
+import { format } from "@/lib/format";
+import { useLanguage } from "@/lib/use-language";
 import { type ChangeEvent, type ClipboardEvent, type JSX } from "react";
 
 type UnformattedCodeProps = {
@@ -18,6 +19,7 @@ export const UnformattedCode = ({
   setUnformattedCode,
   unformattedCode,
 }: UnformattedCodeProps): JSX.Element => {
+  const [language] = useLanguage();
   const { toast } = useToast();
 
   const handleChange = async (
@@ -32,9 +34,10 @@ export const UnformattedCode = ({
   ): Promise<void> => {
     let formattedCode: string;
     try {
-      formattedCode = await formatJava(
-        event.clipboardData.getData("text/plain"),
-      );
+      formattedCode = await format({
+        code: event.clipboardData.getData("text/plain"),
+        language,
+      });
     } catch {
       return;
     }
