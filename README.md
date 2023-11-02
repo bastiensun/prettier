@@ -1,4 +1,4 @@
-# React + TypeScript + Vite
+# Prettier Playground
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
@@ -6,6 +6,21 @@ Currently, two official plugins are available:
 
 - [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
 - [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+
+## About The Project
+
+### Build With
+
+- [Prettier Java](https://github.com/jhipster/prettier-java/)
+- [Prettier](https://prettier.io/)
+- [React Router](https://reactrouter.com/)
+- [React Testing Library](testing-library.com/react/)
+- [React](https://react.dev/)
+- [shadcn/ui](https://ui.shadcn.com/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Vite](https://vitejs.dev/)
+- [Vitest](https://vitest.dev/)
 
 ## Expanding the ESLint configuration
 
