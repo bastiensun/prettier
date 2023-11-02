@@ -93,7 +93,7 @@ export const useCode = (
       setFormattedCode(content);
     };
 
-    runEffect();
+    void runEffect();
   }, [language, unformattedCode]);
 
   return {

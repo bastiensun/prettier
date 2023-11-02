@@ -5,7 +5,7 @@ import * as prettierPluginEstree from "prettier/plugins/estree";
 // @ts-expect-error Could not find a declaration file for module `prettier-plugin-java`.
 import parserJava from "prettier-plugin-java";
 
-const formatJava = (code: string): Promise<string> =>
+const formatJava = async (code: string): Promise<string> =>
   prettierFormat(code, {
     parser: "java",
     plugins: [parserJava],
@@ -13,7 +13,7 @@ const formatJava = (code: string): Promise<string> =>
     tabWidth: 4,
   });
 
-const formatJson = (code: string): Promise<string> =>
+const formatJson = async (code: string): Promise<string> =>
   prettierFormat(code, {
     parser: "json",
     plugins: [prettierPluginBabel, prettierPluginEstree],
@@ -24,7 +24,7 @@ type FormatParameters = {
   language: Language;
 };
 
-export const format = ({
+export const format = async ({
   code,
   language, // eslint-disable-next-line consistent-return
 }: FormatParameters): Promise<string> => {

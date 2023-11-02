@@ -3,16 +3,23 @@ module.exports = {
   env: { browser: true, es2020: true },
   extends: [
     "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
     "plugin:react-hooks/recommended",
     "canonical/auto",
     "canonical/module",
+    "canonical/typescript-type-checking",
   ],
   ignorePatterns: ["dist", ".eslintrc.cjs"],
   parser: "@typescript-eslint/parser",
+  parserOptions: {
+    ecmaVersion: "latest",
+    sourceType: "module",
+    project: ["./tsconfig.json", "./tsconfig.node.json"],
+    tsconfigRootDir: __dirname,
+  },
   plugins: ["react-refresh"],
   rules: {
     "@typescript-eslint/explicit-function-return-type": "error",
+    "@typescript-eslint/return-await": ["error", "in-try-catch"],
     "arrow-body-style": ["error", "as-needed"],
     "import/no-unassigned-import": ["error", { allow: ["**/*.css"] }],
     "react-refresh/only-export-components": [

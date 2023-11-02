@@ -13,7 +13,7 @@ const customRender = (
 ): ReturnType<typeof reactTestingLibraryRender> =>
   reactTestingLibraryRender(ui, { wrapper: Providers, ...options });
 
-// eslint-disable-next-line import/export
+// eslint-disable-next-line import/export,react-refresh/only-export-components
 export * from "@testing-library/react";
 // eslint-disable-next-line import/export
 export { customRender as render };
