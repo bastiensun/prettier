@@ -56,7 +56,7 @@ export const FormattedCode = ({
             theme={themes.oneLight}
           >
             {({ getLineProps, getTokenProps, style, tokens }): JSX.Element => (
-              <pre className="overflow-y-scroll" style={style}>
+              <pre className="overflow-x-scroll" style={style}>
                 {/* eslint-disable react/no-array-index-key*/}
                 {tokens.map((line, lineIndex) => (
                   <div key={lineIndex} {...getLineProps({ line })}>
